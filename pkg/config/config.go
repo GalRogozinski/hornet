@@ -20,12 +20,14 @@ var (
 	defaultProfilesConfigName = "profiles"
 
 	// flags
-	configName         = flag.StringP("config", "c", defaultConfigName, "Filename of the config file without the file extension")
+	configName         = flag.StringP("config", "", defaultConfigName, "Filename of the config file without the file extension")
 	peeringConfigName  = flag.StringP("peeringConfig", "n", defaultPeeringConfigName, "Filename of the peering config file without the file extension")
 	profilesConfigName = flag.String("profilesConfig", defaultProfilesConfigName, "Filename of the profiles config file without the file extension")
 	configDirPath      = flag.StringP("config-dir", "d", ".", "Path to the directory containing the config file")
+    cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 
-	// Viper
+
+// Viper
 	NodeConfig     = viper.New()
 	PeeringConfig  = viper.New()
 	ProfilesConfig = viper.New()
@@ -69,6 +71,8 @@ func FetchConfig() error {
 		_, notHidden := nonHiddenFlags[f.Name]
 		f.Hidden = !notHidden
 	})
+
+
 
 	err := parameter.LoadConfigFile(NodeConfig, *configDirPath, *configName, true, !hasFlag(defaultConfigName))
 	if err != nil {

@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/bazelbuild/bazelisk v1.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/eclipse/paho.mqtt.golang v1.2.1-0.20200506085104-5ee50844ed64
 	github.com/fhmq/hmq v0.0.0-20200609021337-4782f7604868
@@ -34,4 +35,5 @@ require (
 	go.uber.org/atomic v1.6.0
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
+	golang.org/x/tools v0.0.0-20200617042924-7f3f4b10a808 // indirect
 )
