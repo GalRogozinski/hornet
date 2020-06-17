@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/gohornet/hornet/pkg/shutdown"
+	daemon "github.com/iotaledger/hive.go/daemon"
 	"github.com/iotaledger/hive.go/node"
 	"log"
 	"os"
@@ -35,11 +37,13 @@ import (
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+var f *os.File
+var err error
 
 
-func closeProfiler() {
+func memProfiler() {
 	if *memprofile != "" {
-		f, err := os.Create(*memprofile)
+		f, err = os.Create(*memprofile)
 		if err != nil {
 			log.Fatal("could not create memory profile: ", err)
 		}
@@ -51,6 +55,11 @@ func closeProfiler() {
 	}
 }
 
+func closeProfiler() {
+	pprof.StopCPUProfile()
+	f.Close()
+}
+
 
 func main() {
 	flag.Parse()
@@ -59,12 +68,18 @@ func main() {
 		if err != nil {
 			log.Fatal("could not create CPU profile: ", err)
 		}
-		defer f.Close()
 		if err := pprof.StartCPUProfile(f); err != nil {
 			log.Fatal("could not start CPU profile: ", err)
 		}
 		defer pprof.StopCPUProfile()
+		defer f.Close()
 	}
+	
+	daemon.BackgroundWorker("Profiler", func(shutdownSignal <-chan struct{}) {
+		<-shutdownSignal
+		log.Print ("shutting down profiler")
+		closeProfiler()
+	}, shutdown.PriorityProfiler)
 
 	cli.PrintVersion()
 	cli.ParseConfig()
@@ -102,5 +117,4 @@ func main() {
 
 	node.Run(node.Plugins(plugins...))
 
-	closeProfiler()
 }

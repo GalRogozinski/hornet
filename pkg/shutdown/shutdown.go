@@ -26,4 +26,5 @@ const (
 	PriorityCoordinator
 	PriorityUpdateCheck
 	PriorityPrometheus
+	PriorityProfiler
 )

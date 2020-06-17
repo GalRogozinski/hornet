@@ -1,11 +1,10 @@
 package tangle
 
 import (
-	"os"
-	"time"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
+	"os"
+	"time"
 
 	"github.com/iotaledger/hive.go/daemon"
 	"github.com/iotaledger/hive.go/events"
@@ -114,6 +113,7 @@ func run(plugin *node.Plugin) {
 		tangle.ShutdownAddressStorage()
 		tangle.ShutdownUnconfirmedTxsStorage()
 		tangle.ShutdownSpentAddressesStorage()
+
 		log.Info("Flushing caches to database... done")
 
 	}, shutdown.PriorityFlushToDatabase)
