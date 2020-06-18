@@ -62,6 +62,8 @@ func closeProfiler() {
 
 
 func main() {
+	runtime.SetMutexProfileFraction(50)
+
 	flag.Parse()
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
