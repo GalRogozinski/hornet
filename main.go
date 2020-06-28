@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gohornet/hornet/pkg/shutdown"
 	daemon "github.com/iotaledger/hive.go/daemon"
 	"github.com/iotaledger/hive.go/node"
-	"log"
+	"net/http"
 	"os"
 	"runtime"
 	"runtime/pprof"
@@ -41,16 +42,17 @@ var f *os.File
 var err error
 
 
+
 func memProfiler() {
 	if *memprofile != "" {
 		f, err = os.Create(*memprofile)
 		if err != nil {
-			log.Fatal("could not create memory profile: ", err)
+			fmt.Errorf("could not create memory profile: %s", err)
 		}
 		defer f.Close()
 		runtime.GC() // get up-to-date statistics
 		if err := pprof.WriteHeapProfile(f); err != nil {
-			log.Fatal("could not write memory profile: ", err)
+			fmt.Errorf("could not write memory profile: %s", err)
 		}
 	}
 }
@@ -68,10 +70,10 @@ func main() {
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
-			log.Fatal("could not create CPU profile: ", err)
+			fmt.Errorf("could not create CPU profile: %s", err)
 		}
 		if err := pprof.StartCPUProfile(f); err != nil {
-			log.Fatal("could not start CPU profile: ", err)
+			fmt.Errorf("could not start CPU profile: %s", err)
 		}
 		defer pprof.StopCPUProfile()
 		defer f.Close()
@@ -79,9 +81,13 @@ func main() {
 	
 	daemon.BackgroundWorker("Profiler", func(shutdownSignal <-chan struct{}) {
 		<-shutdownSignal
-		log.Print ("shutting down profiler")
+		fmt.Println("shutting down profiler")
 		closeProfiler()
 	}, shutdown.PriorityProfiler)
+
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6067", nil))
+	}()
 
 	cli.PrintVersion()
 	cli.ParseConfig()
