@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 	"sync"
 
 	autopeering "github.com/iotaledger/hive.go/autopeering/peer"
@@ -19,6 +20,7 @@ import (
 	"github.com/gohornet/hornet/pkg/peering/peer"
 	"github.com/gohornet/hornet/pkg/protocol"
 	"github.com/gohornet/hornet/pkg/protocol/handshake"
+	"github.com/gohornet/hornet/pkg/protocol/sting"
 )
 
 var (
@@ -261,6 +263,22 @@ func (m *Manager) ForAllConnected(f PeerConsumerFunc) {
 	}
 }
 
+// AnySTINGPeerConnected returns true if any of the connected, handshaked peers supports the STING protocol.
+func (m *Manager) AnySTINGPeerConnected() bool {
+	stingPeerConnected := false
+
+	m.ForAllConnected(func(p *peer.Peer) bool {
+		if !p.Protocol.Supports(sting.FeatureSet) {
+			return false
+		}
+
+		stingPeerConnected = true
+		return true
+	})
+
+	return stingPeerConnected
+}
+
 // PeerInfos returns snapshots of the currently connected and in the reconnect pool residing peers.
 func (m *Manager) PeerInfos() []*peer.Info {
 	m.RLock()
@@ -473,6 +491,12 @@ func (m *Manager) Listen() error {
 	if err != nil {
 		return fmt.Errorf("%w: '%s' is an invalid bind address", err, m.Opts.BindAddress)
 	}
+
+	// We assume that addr is a literal IPv6 address if it has colons.
+	if strings.Contains(addr, ":") {
+		addr = "[" + addr + "]"
+	}
+
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
 		return fmt.Errorf("%w: '%s' contains an invalid port", err, m.Opts.BindAddress)
