@@ -74,8 +74,8 @@ dockers:
   - goos: linux
     goarch: amd64
     image_templates:
-      - "GalRogozinski/hornet:latest"
-      - "GalRogozinski/hornet:{{ .Tag }}"
+      - "whomaniac/hornet:latest"
+      - "whomaniac/hornet:{{ .Tag }}"
     binaries:
       - hornet
     dockerfile: docker/Dockerfile.goreleaser
