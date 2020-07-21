@@ -163,7 +163,6 @@ changelog:
 
 # Release
 release:
-  prerelease: auto
   name_template: "{{.ProjectName}}-{{.Version}}"
   github:
     owner: GalRogozinski
