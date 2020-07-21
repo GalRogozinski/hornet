@@ -79,7 +79,7 @@ dockers:
     binaries:
       - hornet
     dockerfile: docker/Dockerfile.goreleaser
-    skip_push: auto
+    skip_push: false
 
 # Archives
 archives:
@@ -163,6 +163,7 @@ changelog:
 
 # Release
 release:
+  prerelease: false
   name_template: "{{.ProjectName}}-{{.Version}}"
   github:
     owner: GalRogozinski
