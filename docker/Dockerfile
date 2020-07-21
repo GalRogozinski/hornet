@@ -1,15 +1,15 @@
 FROM alpine:latest
 
-ARG REPO="gohornet/hornet"
+ARG REPO="GalRogozinski/hornet"
 ARG TAG=latest
 ARG ARCH=x86_64
 ARG OS=Linux
 
 LABEL org.label-schema.description="HORNET - The IOTA community node"
-LABEL org.label-schema.name="gohornet/hornet"
+LABEL org.label-schema.name="GalRogozinski/hornet"
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.vcs-url="https://github.com/gohornet/hornet"
-LABEL org.label-schema.usage="https://github.com/gohornet/hornet/blob/master/DOCKER.md"
+LABEL org.label-schema.vcs-url="https://github.com/GalRogozinski/hornet"
+LABEL org.label-schema.usage="https://github.com/GalRogozinski/hornet/blob/master/DOCKER.md"
 
 WORKDIR /app
 

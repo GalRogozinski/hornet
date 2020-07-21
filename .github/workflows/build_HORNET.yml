@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - develop
   pull_request:
 
 jobs:
@@ -25,3 +24,21 @@ jobs:
 
       - name: Build HORNET
         run: go build -v .
+
+      - name: Extract commit hash
+        id: sha
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Publish Docker
+        uses: elgohr/Publish-Docker-Github-Action@2.18
+        with:
+          name: whomaniac/hornet
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: docker/Dockerfile.dev
+          tags: ${{ steps.sha.outputs.sha_short }}
+
+
+
