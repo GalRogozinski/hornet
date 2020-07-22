@@ -37,7 +37,7 @@ jobs:
           name: whomaniac/hornet
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: Dockerfile.dev
+          dockerfile: docker/Dockerfile.dev
           tags: ${{ steps.sha.outputs.sha_short }}
 
 
