@@ -351,21 +351,8 @@ func (proc *Processor) processWorkUnit(wu *WorkUnit, p *peer.Peer) {
 	wu.replyToAllRequests(proc.requestQueue)
 }
 
-// checks whether the given transaction's timestamp is valid.
-// the timestamp is automatically valid if the transaction is a solid entry point.
-// the timestamp should be in the range of +/- 10 minutes to current time.
+// timestamp is always valid so we can import old transactions
+// we don't care about broadcasting them later in this version
 func (proc *Processor) ValidateTimestamp(hornetTx *hornet.Transaction) (valid, broadcast bool) {
-	snapshotTimestamp := tangle.GetSnapshotInfo().Timestamp
-	txTimestamp := hornetTx.GetTimestamp()
-
-	pastTime := time.Now().Add(-10 * time.Minute).Unix()
-	futureTime := time.Now().Add(10 * time.Minute).Unix()
-
-	// we need to accept all txs since the snapshot timestamp for synchronization
-	if txTimestamp >= snapshotTimestamp && txTimestamp < futureTime {
-		return true, txTimestamp >= pastTime
-	}
-
-	// ignore invalid timestamps for solid entry points
-	return tangle.SolidEntryPointsContain(hornetTx.GetTxHash()), false
+	return true, false
 }
